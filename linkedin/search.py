@@ -15,15 +15,17 @@ import common.search
 import common.connect
 import common.profilestore
 import linkedin.core
+import linkedin.connect
 
 class LinkedInSearch(common.search.APISearch):
 
   network_name = 'LinkedIn'
   search_url   = "https://www.linkedin.com/pub/dir/"
 
+        
+
   def __init__(self, profilestore=None, logger=None):
-    self.connection = common.connect.MediaConnection(logger)
-    self.connection.delay = 2
+    self.connection = linkedin.connect.LinkedInSearchConnection(logger)
     self.profilestore = profilestore
     self.logger = logger
 
@@ -32,9 +34,14 @@ class LinkedInSearch(common.search.APISearch):
     links = []
     if text:
       for line in text.splitlines():
-        if 'linkedin.com/pub/' in line:
-          link = re.sub('<a href="([^"]*)".*','\\1',line)
-          links.append(link)
+        if 'linkedin.com/in/' in line:
+          if 'canonical' in line:
+#            print('Match: {}'.format(line))
+            link = re.sub('.*href="([^"]*linkedin.com\/in\/[^"]*)".*','\\1',line)
+#            print('Link: {}'.format(link))
+            links.append(link)
+          elif 'Public' in line:
+            links += list(set(re.findall('https://www.linkedin.com\/in\/[a-z0-9\-]+',line)))
     return list(set(links))
 
   def search(self, search_term):
@@ -59,9 +66,6 @@ class LinkedInSearch(common.search.APISearch):
     return result_list
         
 
-#  def __init__(self,profilestore=None,logger=None):
-#    super().__init__(domain='linkedin.com',profilestore=profilestore,logger=logger)
-#   
   def is_valid_result(self,url):
     return linkedin.core.is_valid_result(self, url)
     

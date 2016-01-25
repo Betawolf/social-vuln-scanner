@@ -384,7 +384,6 @@ class Analyser:
           rec = self.url_to_record(link, profile.bestname())
           if rec:
             lid = self.profilestore.add_record(rec)
-#            self.profilestore.add_match(record['uid'], lid)
           else:
             self.logger.info("Link {} failed to translate into a record.".format(link))
 

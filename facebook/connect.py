@@ -1,4 +1,5 @@
 import argparse
+import time
 
 try:
   import common.connect
@@ -12,12 +13,28 @@ except ImportError as ie:
 
 class FacebookConnection(common.connect.JSONConnection):
 
-  delay = 2
+  delay = 4
 
   def __init__(self,app_token,user_token,logger):
     self.app_token = app_token
     self.user_token = user_token
     super().__init__(logger)
+
+  def handle_error(self, error_obj):
+    self.logger.warn(error_obj)
+    if hasattr(error_obj, 'code'):
+      self.logger.info(error_obj.code)
+      if error_obj.code == 400:
+        self.logger.warn("Facebook is denying access. Writing blockfile and waiting for human intervention.")
+        fw = open('blockfile','w')
+        fw.write('NO')
+        fw.close()
+        while True:
+          stat = open('blockfile').read()
+          if stat == 'OK':
+            break
+          time.sleep(5)
+      
 
   def build_request(self,url,params):
     if 'as_user' in params:

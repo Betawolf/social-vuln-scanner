@@ -45,7 +45,8 @@ class Downloader():
       os.mkdir(dirpath) 
     except FileExistsError:
       pass
+    dlist = os.listdir(dirpath)
     for record in self.profilestore.records:
-      if record['network'] == self.network_name:
+      if record['network'] == self.network_name and str(record['uid'])+'.json' not in dlist:
         self.download(record)
         self.flush(dirpath,record)
