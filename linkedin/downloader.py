@@ -11,6 +11,7 @@ except ImportError as ie:
 
 
 from linkedin.connect import LinkedInConnection
+from common.connect import PooledConnection
 
 import common.downloader
 import common.profilestore

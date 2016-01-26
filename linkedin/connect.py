@@ -17,7 +17,7 @@ class LinkedInConnection(common.connect.JSONOauthConnection):
     if ret and 'status' in ret:
       if ret['status'] == 404:
         return None
-      if ret['status'] == 403:
+      if ret['status'] == 403 and ret['errorCode'] != 0:
         self.flag_wait()
     return ret
 
