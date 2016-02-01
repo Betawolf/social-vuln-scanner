@@ -62,7 +62,9 @@ if __name__ == '__main__':
   linkedinconn = PooledConnection(args.key, LinkedInConnection, logger=logger)
   ps = common.profilestore.ProfileStore(args.database,logger=logger)
   logger.info('Using database \'{}\''.format(args.database))
+  runname = args.database[:-7]
+  logger.info('Run name: {}'.format(runname))
   lidownloader = LinkedInDownloader(ps, linkedinconn,logger=logger)
-  lidownloader.run()
+  lidownloader.run(runname+'-raw')
 
 
