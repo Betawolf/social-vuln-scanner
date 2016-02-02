@@ -267,11 +267,11 @@ wf.close()
 logger.info('Wrote {} names to {}'.format(len(confirmed_names), namesfile))
 
 #Set up to download search results.
-logger('Initialising expansion DB.')
+logger.info('Initialising expansion DB.')
 exp_db = prefix+'expand-db.csv'
 exprawdir = prefix+'expand-raw'
 expprofdir = prefix+'expand-profiles'
-expstore = common.profilestore.ProfileStore(exp_df, logger)
+expstore = common.profilestore.ProfileStore(exp_db, logger)
 
 searchers = []
 
@@ -319,7 +319,7 @@ for k in ['name', 'occupation', 'email', 'text', 'photo', 'hobbies', 'friends', 
 
 logger.info('Calculating per-employee vulnerabilities.')
 
-for employee in employees:
+for employee in employee_profiles:
   #array this person's identities
   person = [employee] 
   if employee in matches:
