@@ -25,6 +25,8 @@ class FacebookDownloader(common.downloader.Downloader):
   def download(self, record):
     results = []
     n_id = record['network_id']
+    if n_id == None or n_id == '':
+      return results
     #params for main grab
     params = {}
     selectors = ['id','about','bio','cover','hometown','is_verified','link','location','name','website']

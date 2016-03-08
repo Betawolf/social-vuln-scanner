@@ -1,4 +1,5 @@
 import argparse
+import random
 import time
 
 try:
@@ -31,12 +32,15 @@ class FacebookConnection(common.connect.JSONConnection):
         fw.close()
         while True:
           stat = open('blockfile').read()
-          if stat == 'OK':
+          if stat != 'NO':
             break
           time.sleep(5)
-      
 
   def build_request(self,url,params):
+    if random.random() > 0.5 and self.delay < 25:
+      self.delay += 1
+    elif self.delay > 1:
+      self.delay -= 1
     if 'as_user' in params:
       params['access_token'] = self.user_token
       del params['as_user']

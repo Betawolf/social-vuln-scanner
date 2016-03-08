@@ -12,7 +12,7 @@ This tool makes use of public web and social information to identify potential s
 ###Operation
 
 Launch the tool as
-> python vuln_scorer.py --gk <googlekeyfile> --fk <facebookkeyfile> --tk <twitterkeyfile> run_name target_url
+> python vuln_scorer.py --gk [googlekeyfile] --fk [facebookkeyfile] --tk [twitterkeyfile] --lk [linkedinkeyfile] run_name target_url
 
 Where 'run_name' is a label which will be used for this launch and its results, and 'target_url' is the website homepage of the targeted organisation. 
 
