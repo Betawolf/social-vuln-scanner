@@ -109,7 +109,7 @@ class WebOrg:
     return self.cache
 
   def getEmail(self):
-    dirstring = 'webcache'+os.sep+self.id
+    dirstring = self.cache
     emails = []
     files = self.__cachedfiles()
     for f in files:
@@ -120,7 +120,7 @@ class WebOrg:
     return list(set(emails))
 
   def getPhone(self):
-    dirstring = 'webcache'+os.sep+self.id
+    dirstring = self.cache
     numbers = []
     files = self.__cachedfiles()
     for f in files:
@@ -131,7 +131,7 @@ class WebOrg:
     return list(set(numbers))
 
   def getDocs(self):
-    dirstring = 'webcache'+os.sep+self.id
+    dirstring = self.cache
     docs = []
     for f in self.__cachedfiles():
       filepath = dirstring + os.sep + f

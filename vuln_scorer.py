@@ -193,7 +193,7 @@ def is_employee(profile, employer_profiles, employee_names, employer_names):
   onsite = False
   for name in profile.names:
     for ename in employee_names:
-      nsim = nameDiff(name, ename)
+      nsim = string_sim(name, ename)
       if nsim > 0.8:
         onsite = True
   hasfirmname = False
@@ -233,14 +233,14 @@ employee_profiles = []
 
 #Load all the employer profiles
 for record in seedps.records:
-  fname = seedprofdir+str(record['uid'])+'.pickle'
+  fname = seedprofdir+os.sep+str(record['uid'])+'.pickle'
   if os.path.exists(fname):
     profile = pickle.load(open(fname,'rb'))
     employer_profiles.append(profile)
 
 #Identify employees
 for record in profilestore.records:
-  fname = profdir+str(record['uid'])+'.pickle'
+  fname = profdir+os.sep+str(record['uid'])+'.pickle'
   if os.path.exists(fname):
     profile = pickle.load(open(fname,'rb'))
     if is_employee(profile, employer_profiles, employee_names, employer_names):
@@ -261,7 +261,7 @@ confirmed_names = list(set(confirmed_names))
 wf = open(namesfile,'w')
 
 for name in confirmed_names:
-  wf.write('{}\n'.format(n))
+  wf.write('{}\n'.format(name))
 wf.close()
 
 logger.info('Wrote {} names to {}'.format(len(confirmed_names), namesfile))
