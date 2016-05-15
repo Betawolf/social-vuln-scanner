@@ -56,7 +56,7 @@ class MediaConnection:
     return response_text
   
 
-  def flag_wait(self):
+  def flag_wait(self, waitfrom=None):
     """ Flag to the next request that a wait
     period is necessary (rate limiting). """
     self.waitfrom = datetime.datetime.now()
@@ -68,6 +68,7 @@ class MediaConnection:
     but will handle waiting periods when flag_wait has 
     been called. """
     if not self.waitfrom:
+      self.logger.info('Delay of {}'.format(self.delay))
       time.sleep(self.delay)
     else:
       iterc = 0
@@ -104,12 +105,12 @@ class MediaConnection:
     except Exception as e:
       self.logger.warn("Exception while requesting `{}`".format(req))
       self.handle_error(e) 
-    return self.handle_response(ret)      
+    return self.handle_response(ret, None)      
 
 
 class JSONConnection(MediaConnection):
   
-  def handle_response(self,response_text):
+  def handle_response(self,response_text, headers):
     ret = None
     try:
       ret = json.loads(response_text)
@@ -154,6 +155,7 @@ class OauthConnection(MediaConnection):
     self.lasturl = url
     self.lastparams = params
     ret = None
+    resp = None
     self.wait()
     try:
       resp, content = self.client.request(req, "GET")
@@ -162,13 +164,13 @@ class OauthConnection(MediaConnection):
     except Exception as e:
       self.logger.warn("Exception while oauth-requesting `{}`".format(url))
       self.handle_error(e) 
-    return self.handle_response(ret)      
+    return self.handle_response(ret, resp)      
 
 
 class JSONOauthConnection(OauthConnection):
   
-  def handle_response(self,response_text):
-    return JSONConnection.handle_response(self,response_text)
+  def handle_response(self,response_text, headers):
+    return JSONConnection.handle_response(self,response_text, headers)
 
 
 class PooledConnection:

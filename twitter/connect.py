@@ -1,4 +1,5 @@
 import time
+import datetime
 from sys import path
 path.append('..')
 
@@ -8,8 +9,8 @@ class TwitterConnection(common.connect.JSONOauthConnection):
 
   waitseconds = 900
   
-  def handle_response(self, response_text):
-      ret = super().handle_response(response_text)
+  def handle_response(self, response_text, head):
+      ret = super().handle_response(response_text, head)
       if not ret:
         return None
       if 'status' in ret and ret['status'] == 404:
@@ -21,6 +22,13 @@ class TwitterConnection(common.connect.JSONOauthConnection):
           for e in ret['errors']:
             self.logger.warn("Error code {}: '{}'".format(e['code'],e['message']))
             if e['code'] == 88:
+              if head and 'x-rate-limit-reset' in head:
+                waituntil = datetime.datetime.fromtimestamp(float(head['x-rate-limit-reset']))
+                diff = waituntil - datetime.datetime.now() 
+                daysecs = diff.days * 3600 * 24
+                self.waitseconds = daysecs + diff.seconds
+              else:
+                self.waitseconds = 900
               self.flag_wait()
             else:
               ret = None

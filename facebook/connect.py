@@ -26,15 +26,8 @@ class FacebookConnection(common.connect.JSONConnection):
     if hasattr(error_obj, 'code'):
       self.logger.info(error_obj.code)
       if error_obj.code == 400:
-        self.logger.warn("Facebook is denying access. Writing blockfile and waiting for human intervention.")
-        fw = open('blockfile','w')
-        fw.write('NO')
-        fw.close()
-        while True:
-          stat = open('blockfile').read()
-          if stat != 'NO':
-            break
-          time.sleep(5)
+        self.logger.warn("Facebook is denying access. Backing off.")
+        time.sleep(30)
 
   def build_request(self,url,params):
     if random.random() > 0.5 and self.delay < 25:

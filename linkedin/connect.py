@@ -12,8 +12,8 @@ class LinkedInConnection(common.connect.JSONOauthConnection):
     params['format'] = 'json'
     return super().build_request(url, params)
 
-  def handle_response(self,response_text):
-    ret = super().handle_response(response_text)
+  def handle_response(self,response_text, headers):
+    ret = super().handle_response(response_text, headers)
     if ret and 'status' in ret:
       if ret['status'] == 404:
         return None
@@ -39,7 +39,7 @@ class LinkedInSearchConnection(common.connect.MediaConnection):
         self.logger.info('Hit 999 response. Waiting for {} seconds.'.format(self.waitseconds))
         self.flag_wait()
 
-  def handle_response(self, response_text):
+  def handle_response(self, response_text, headers):
     if self.delay > 5 and response_text != None:
       self.delay = self.delay - 15
     if self.in_block and response_text != None:

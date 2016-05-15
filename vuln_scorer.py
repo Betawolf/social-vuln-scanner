@@ -150,6 +150,8 @@ logger.info('Beginning seed analysis phase')
 for a in analysers:
   a.run(indirpath=seedrawdir, outdirpath=seedprofdir)
 
+neturls = {"Twitter":"http://www.twitter.com/{}", "Facebook":"http://www.facebook.com/{}", "LinkedIn":"http://www.linkedin.com/{}", "Google+":"http://plus.google.com/{}"}
+
 #Transfer affiliated profiles to central store.
 for f in os.listdir(seedprofdir):
   p = pickle.load(open(seedprofdir+os.sep+f,'rb'))
@@ -159,7 +161,7 @@ for f in os.listdir(seedprofdir):
       record = {}
       record['network'] = p.network
       record['network_id'] = uid
-      record['url'] = str(uid)
+      record['url'] = neturls[p.network].format(str(uid))
       record['search_term'] = p.uid
       profilestore.add_record(record)
 
