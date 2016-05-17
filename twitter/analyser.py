@@ -21,9 +21,10 @@ class TwitterAnalyser(common.analyser.Analyser):
   def _analyse_show(self, result, profile):
     if 'entities' in result and 'url' in result['entities'] and 'urls' in result['entities']['url']:
       profile.web_links = [u['expanded_url'] for u in result['entities']['url']['urls']]
-    profile.names.append(result['name'])
-    profile.names.append(result['screen_name'])
-    profile.names.append(result['id_str'])
+    if 'name' in result:
+      profile.names.append(result['name'])
+      profile.names.append(result['screen_name'])
+      profile.names.append(result['id_str'])
     if 'description' in result:
       profile.self_descriptions.append(result['description'])
     if 'verified' in result:

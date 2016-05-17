@@ -245,7 +245,7 @@ def cross_resolve(employees, prefix):
   the profiles match those terms. """
   pfdir = prefix+'expand-profiles/'
   ps = common.profilestore.ProfileStore(prefix+'expand-db.csv')
-  grouped_profiles = []
+  grouped_profiles = {}
 
   for record in ps.records:
     if os.path.exists(pfdir+record['uid']+'.pickle'):
