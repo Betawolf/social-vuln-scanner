@@ -3,6 +3,7 @@ import argparse
 import pickle
 import editdistance
 import datetime
+import itertools
 
 import resolver
 
@@ -354,7 +355,7 @@ for employee in employee_profiles:
               samedaycount += 1
       if samedaycount > 1 and samedaycount/len(updatetimes) > 0.05:
         local_matches['activity'] = True
-    if not local_matches['photo'] and len(employee.employee_images) > 0:
+    if not local_matches['photo'] and len(employee.profile_images) > 0:
       local_matches['photo'] = True
     if not local_matches['hobbies'] and employee.habits or employee.tags:
       local_matches['hobbies'] = True
@@ -365,12 +366,14 @@ for employee in employee_profiles:
       if local_matches[k]:
         counts[k] += 1
 
-#output results
 logger.info('Finished per-employee counting.')
+#output results
+sumfile = prefix+'summary.txt'
+sumfh = open(sumfile, 'w')
 
-print("--Employees Only--")
+sumfh.write("--Employees Only--\n")
 for k,v in counts.items():
-  print("{}:{}".format(k,v))
+  sumfh.write("{}:{}\n".format(k,v))
 
 logger.info('Accessing web-mined data')
 counts['email'] += len(webminer.getEmail())
@@ -378,12 +381,13 @@ counts['phone'] += len(webminer.getPhone())
 counts['docs'] += (len(webminer.getDocs()))
 logger.info('Finished counting.')
 
-print("\n--Total--")
+sumfh.write("\n--Total--\n")
 
 for k,v in counts.items():
-  print("{}:{}".format(k,v))
+  sumfh.write("{}:{}\n".format(k,v))
 
 bootstrap = counts['name']+counts['email']+counts['phone']+counts['activity']+counts['docs']
 accentuator = counts['text']+counts['photo']+counts['hobbies']+counts['friends']
-print("Boostrap: {}\nAccentuator: {}".format(bootstrap,accentuator))
+sumfh.write("Bootstrap: {}\nAccentuator: {}\n".format(bootstrap,accentuator))
+sumfh.close()
  
